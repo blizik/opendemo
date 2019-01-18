@@ -1,7 +1,7 @@
 #![allow(dead_code, unused_imports)]
 
 use std::io::{self, Read, Cursor, Seek};
-use std::fs;
+use std::fs::File;
 
 #[derive(Debug, Default)]
 struct Header {
@@ -33,7 +33,7 @@ struct Demo {
 impl Demo {
     pub fn new(path: &str) -> io::Result<Self> {
         let mut demo = vec![];
-        let mut demo_file = fs::File::open(path)?;
+        let mut demo_file = File::open(path)?;
         demo_file.read_to_end(&mut demo)?;
 
         Ok(Self {
