@@ -1,0 +1,7 @@
+[package]
+name = "pdt"
+version = "0.1.0"
+authors = ["Blizik <>"]
+edition = "2018"
+
+[dependencies]
