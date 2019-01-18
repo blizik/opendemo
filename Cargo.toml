@@ -1,5 +1,5 @@
 [package]
-name = "pdt"
+name = "opendemo"
 version = "0.1.0"
 authors = ["Blizik <>"]
 edition = "2018"

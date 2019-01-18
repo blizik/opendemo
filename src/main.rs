@@ -1,6 +1,7 @@
 #![allow(dead_code, unused_imports)]
 
 use std::io::{self, Read, Cursor, Seek};
+use std::fmt;
 use std::fs::File;
 
 #[derive(Debug, Default)]
@@ -19,6 +20,24 @@ struct Header {
     ticks: i32,
     frames: i32,
     signon: i32
+}
+
+impl fmt::Display for Header {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f,
+            "{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}",
+            format!("{:<25}: {}", "Demo protocol", self.dem_protocol),
+            format!("{:<25}: {}", "Network protocol", self.net_protocol),
+            format!("{:<25}: {}", "Server name", self.server),
+            format!("{:<25}: {}", "Client name", self.client),
+            format!("{:<25}: {}", "Map name", self.map),
+            format!("{:<25}: {}", "Game directory", self.dir),
+            format!("{:<25}: {}", "Playback time", self.time),
+            format!("{:<25}: {}", "Ticks", self.ticks),
+            format!("{:<25}: {}", "Frames", self.frames),
+            format!("{:<25}: {}", "Signon length", self.signon),
+        )
+    }
 }
 
 #[derive(Debug)]
@@ -170,9 +189,28 @@ impl Demo {
 }
 
 fn main() {
+    println!("opendemo v0.1 by blizik\n");
+
     let mut demo = Demo::new(
         &std::env::args().nth(1).expect("No demo supplied")
     ).unwrap();
 
-    println!("{}", demo.parse().unwrap());
+    demo.parse().unwrap();
+
+    println!("{}", demo.header);
+
+    println!("\x1b[33m");
+
+    for (tick, cmd) in demo.cmds {
+        match cmd.trim_matches('\0') {
+            "autosave" => println!("Autosave command detected on tick {}", tick),
+            "echo #SAVE#" => println!("Some meme about the demo plugin on tick {}", tick),
+            _ => {}
+        }
+    }
+
+    println!("\x1b[0m");
+
+    println!("{:<25}: {}", "Measured time", demo.ticks.unwrap() as f32 * 0.015);
+    println!("{:<25}: {}", "Measured ticks", demo.ticks.unwrap());
 }
